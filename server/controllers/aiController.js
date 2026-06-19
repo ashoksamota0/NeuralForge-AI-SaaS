@@ -315,12 +315,12 @@ export const resumeReview = async (req, res) => {
     const resume = req.file;
     const plan = req.plan;
 
-    // if (plan !== "premium") {
-    //   return res.json({
-    //     success: false,
-    //     message: "This feature is only available for premium subscriptions",
-    //   });
-    // }
+    if (plan !== "premium") {
+      return res.json({
+        success: false,
+        message: "This feature is only available for premium subscriptions",
+      });
+    }
 
     if (resume.size > 5 * 1024 * 1024) {
       return res.json({
@@ -338,7 +338,7 @@ export const resumeReview = async (req, res) => {
       model: "gemini-2.5-flash",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      max_tokens: 1000,
+      max_tokens: 4000,
     });
 
     const content = response.choices[0].message.content;
