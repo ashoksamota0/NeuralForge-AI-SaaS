@@ -1,22 +1,20 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
-import Hero from '../components/Hero'
-import AiTools from '../components/AiTools'
-import Testimonial from '../components/Testimonial'
-import Plan from '../components/Plan'
-import Footer from '../components/Footer'
+import React from "react";
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import Testimonial from "../components/Testimonial";
+import Plan from "../components/Plan";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
-    <>
+    <main className="min-h-screen overflow-hidden bg-white">
       <Navbar />
       <Hero />
-      <AiTools/>
       <Testimonial />
-      <Plan/>
-      <Footer/>
-    </>
-  )
-}
+      <Plan />
+      <Footer />
+    </main>
+  );
+};
 
-export default Home
+export default Home;

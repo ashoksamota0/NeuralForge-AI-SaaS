@@ -1,6 +1,1016 @@
+// import React, { useState } from "react";
+// import axios from "axios";
+// import { useUser, useAuth } from "@clerk/clerk-react";
+// import { Check, Crown, Lock, X, CreditCard, Sparkles, Zap } from "lucide-react";
+
+// const Plan = () => {
+//   const { user } = useUser();
+//   const { getToken } = useAuth();
+
+//   const [showModal, setShowModal] = useState(false);
+//   const [step, setStep] = useState("payment");
+
+//   const [cardData, setCardData] = useState({
+//     name: "",
+//     number: "",
+//     expiry: "",
+//     cvv: "",
+//   });
+
+//   const isPremium = user?.publicMetadata?.plan === "premium";
+
+//   const handlePayment = async () => {
+//     setStep("processing");
+
+//     try {
+//       const { data } = await axios.post(
+//         `${import.meta.env.VITE_BASE_URL}/api/user/upgrade-to-premium`,
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${await getToken()}`,
+//           },
+//         },
+//       );
+
+//       if (data.success) {
+//         window.location.reload();
+//       } else {
+//         alert(data.message);
+//         setStep("payment");
+//       }
+//     } catch (error) {
+//       console.log(error);
+//       setStep("payment");
+//     }
+//   };
+
+//   const formatCard = (val) =>
+//     val
+//       .replace(/\D/g, "")
+//       .slice(0, 16)
+//       .replace(/(.{4})/g, "$1 ")
+//       .trim();
+
+//   const formatExpiry = (val) =>
+//     val
+//       .replace(/\D/g, "")
+//       .slice(0, 4)
+//       .replace(/(.{2})/, "$1/");
+
+//   const closeModal = () => {
+//     setShowModal(false);
+//     setStep("payment");
+//   };
+
+//   return (
+//     <section
+//       id="pricing"
+//       className="relative overflow-hidden px-5 pt-0 pb-2 sm:px-8 lg:px-10"
+//     >
+//       {/* Background Shapes */}
+//       <div className="pointer-events-none absolute left-0 top-20 h-80 w-80 rounded-full bg-purple-100/40 blur-3xl" />
+//       <div className="pointer-events-none absolute right-0 bottom-0 h-80 w-80 rounded-full bg-pink-100/40 blur-3xl" />
+
+//       <div className="relative z-10 mx-auto max-w-6xl">
+//         {/* Heading */}
+//         <div className="text-center">
+//           <span className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-4 py-1.5 text-xs font-medium text-primary sm:text-sm">
+//             <Sparkles className="h-3.5 w-3.5" />
+//             Simple & Flexible Pricing
+//           </span>
+
+//           <h2 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+//             Choose Your Plan
+//           </h2>
+
+//           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+//             Choose a plan to unlock advanced AI content creation tools and boost
+//             your productivity.
+//           </p>
+//         </div>
+
+//         {/* Plans */}
+//         <div className="mx-auto mt-12 grid max-w-5xl gap-6 lg:grid-cols-2">
+//           {/* Free Plan */}
+//           <div className="relative rounded-3xl border border-slate-200 bg-white/80 p-7 shadow-sm backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-9">
+//             <div className="flex items-start justify-between">
+//               <div>
+//                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
+//                   <Zap className="h-6 w-6 text-slate-600" />
+//                 </div>
+
+//                 <h3 className="text-2xl font-bold text-slate-900">Free Plan</h3>
+
+//                 <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
+//                   Perfect for getting started with AI-powered content creation.
+//                 </p>
+//               </div>
+//             </div>
+
+//             <div className="mt-7">
+//               <span className="text-5xl font-bold tracking-tight text-slate-900">
+//                 ₹0
+//               </span>
+//               <span className="ml-2 text-sm text-slate-500">/ month</span>
+//             </div>
+
+//             <div className="my-7 h-px bg-slate-100" />
+
+//             <p className="mb-4 text-sm font-semibold text-slate-800">
+//               What's included
+//             </p>
+
+//             <ul className="space-y-3.5 text-sm text-slate-600">
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 AI Article Writer
+//                 <span className="ml-auto text-xs text-slate-400">Limited</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Blog Title Generator
+//                 <span className="ml-auto text-xs text-slate-400">Limited</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 AI Image Generation
+//                 <span className="ml-auto text-xs text-slate-400">Limited</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Background Removal
+//                 <span className="ml-auto text-xs text-slate-400">Limited</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Object Removal
+//                 <span className="ml-auto text-xs text-slate-400">Limited</span>
+//               </li>
+//             </ul>
+
+//             <button className="mt-8 w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 text-sm font-semibold text-slate-600">
+//               {isPremium ? "Basic Features" : "Current Plan"}
+//             </button>
+//           </div>
+
+//           {/* Premium Plan */}
+//           <div
+//             className={`relative rounded-3xl border-2 bg-white/90 p-7 shadow-lg backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-9 ${
+//               isPremium
+//                 ? "border-green-400 shadow-green-100"
+//                 : "border-primary shadow-indigo-100"
+//             }`}
+//           >
+//             {/* Badge */}
+//             <div
+//               className={`absolute -top-3 left-8 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold text-white shadow-sm ${
+//                 isPremium ? "bg-green-500" : "bg-primary"
+//               }`}
+//             >
+//               <Crown className="h-3.5 w-3.5" />
+//               {isPremium ? "ACTIVE" : "MOST POPULAR"}
+//             </div>
+
+//             <div className="flex items-start justify-between">
+//               <div>
+//                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md shadow-indigo-100">
+//                   <Crown className="h-6 w-6 text-white" />
+//                 </div>
+
+//                 <h3 className="text-2xl font-bold text-slate-900">
+//                   Premium Plan
+//                 </h3>
+
+//                 <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
+//                   Unlock all advanced AI features without limits.
+//                 </p>
+//               </div>
+//             </div>
+
+//             <div className="mt-7">
+//               <span className="text-5xl font-bold tracking-tight text-slate-900">
+//                 ₹499
+//               </span>
+//               <span className="ml-2 text-sm text-slate-500">/ month</span>
+//             </div>
+
+//             <div className="my-7 h-px bg-slate-100" />
+
+//             <p className="mb-4 text-sm font-semibold text-slate-800">
+//               Everything in Free, plus
+//             </p>
+
+//             <ul className="space-y-3.5 text-sm text-slate-600">
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Unlimited AI Article Writer
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Unlimited Blog Title Generator
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Unlimited AI Image Generation
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Unlimited Background Removal
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Unlimited Object Removal
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Resume Reviewer
+//                 <span className="rounded-full bg-purple-50 px-2 py-0.5 text-[10px] font-semibold text-primary">
+//                   PREMIUM
+//                 </span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+//                 Priority Access
+//               </li>
+//             </ul>
+
+//             {isPremium ? (
+//               <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 py-3.5 text-sm font-semibold text-white">
+//                 <Check className="h-4 w-4" />
+//                 Premium Active
+//               </button>
+//             ) : (
+//               <button
+//                 onClick={() => setShowModal(true)}
+//                 className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl active:scale-95"
+//               >
+//                 Upgrade to Premium
+//                 <Crown className="h-4 w-4" />
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Payment Modal */}
+//       {showModal && (
+//         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm">
+//           <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white shadow-2xl">
+//             {/* Modal Header */}
+//             <div className="flex items-center justify-between bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 px-6 py-5">
+//               <div className="flex items-center gap-3">
+//                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+//                   <Crown className="h-5 w-5 text-white" />
+//                 </div>
+
+//                 <div>
+//                   <p className="text-sm font-semibold text-white">
+//                     NeuralForge Premium
+//                   </p>
+//                   <p className="mt-0.5 text-xs text-white/70">
+//                     Premium Plan — ₹499/month
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <button
+//                 onClick={closeModal}
+//                 className="flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
+//               >
+//                 <X className="h-5 w-5" />
+//               </button>
+//             </div>
+
+//             {/* Payment */}
+//             {step === "payment" && (
+//               <div className="p-6">
+//                 {/* Payment Method */}
+//                 <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+//                   <div className="flex items-center gap-3">
+//                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm">
+//                       <CreditCard className="h-5 w-5 text-primary" />
+//                     </div>
+
+//                     <div>
+//                       <p className="text-sm font-semibold text-slate-800">
+//                         Pay securely by card
+//                       </p>
+//                       <p className="text-xs text-slate-400">
+//                         Visa, Mastercard & other cards
+//                       </p>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* Card Form */}
+//                 <div className="space-y-3">
+//                   <input
+//                     type="text"
+//                     placeholder="Cardholder Name"
+//                     value={cardData.name}
+//                     onChange={(e) =>
+//                       setCardData({
+//                         ...cardData,
+//                         name: e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                   />
+
+//                   <input
+//                     type="text"
+//                     placeholder="Card Number"
+//                     value={cardData.number}
+//                     onChange={(e) =>
+//                       setCardData({
+//                         ...cardData,
+//                         number: formatCard(e.target.value),
+//                       })
+//                     }
+//                     className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                   />
+
+//                   <div className="flex gap-3">
+//                     <input
+//                       type="text"
+//                       placeholder="MM/YY"
+//                       value={cardData.expiry}
+//                       onChange={(e) =>
+//                         setCardData({
+//                           ...cardData,
+//                           expiry: formatExpiry(e.target.value),
+//                         })
+//                       }
+//                       className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                     />
+
+//                     <input
+//                       type="password"
+//                       placeholder="CVV"
+//                       maxLength={3}
+//                       value={cardData.cvv}
+//                       onChange={(e) =>
+//                         setCardData({
+//                           ...cardData,
+//                           cvv: e.target.value.replace(/\D/g, "").slice(0, 3),
+//                         })
+//                       }
+//                       className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                     />
+//                   </div>
+//                 </div>
+
+//                 <button
+//                   onClick={handlePayment}
+//                   disabled={
+//                     !cardData.name ||
+//                     cardData.number.length < 19 ||
+//                     cardData.expiry.length < 5 ||
+//                     cardData.cvv.length < 3
+//                   }
+//                   className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+//                 >
+//                   <Lock className="h-4 w-4" />
+//                   Pay ₹499
+//                 </button>
+
+//                 <p className="mt-3 text-center text-xs text-slate-400">
+//                   🔒 Secured by Razorpay
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* Processing */}
+//             {step === "processing" && (
+//               <div className="flex flex-col items-center justify-center px-8 py-16">
+//                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50">
+//                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-primary" />
+//                 </div>
+
+//                 <p className="mt-6 text-base font-semibold text-slate-800">
+//                   Processing your payment...
+//                 </p>
+
+//                 <p className="mt-2 text-center text-xs text-slate-400">
+//                   Please do not close this window
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* Success */}
+//             {step === "success" && (
+//               <div className="flex flex-col items-center justify-center px-8 py-16">
+//                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+//                   <Check className="h-8 w-8 text-green-600" />
+//                 </div>
+
+//                 <p className="mt-6 text-xl font-bold text-slate-800">
+//                   Payment Successful!
+//                 </p>
+
+//                 <p className="mt-2 text-center text-sm text-slate-500">
+//                   Welcome to Premium! All features are now unlocked.
+//                 </p>
+
+//                 <button
+//                   onClick={() => {
+//                     setShowModal(false);
+//                     setStep("payment");
+//                   }}
+//                   className="mt-6 rounded-xl bg-green-500 px-8 py-3 text-sm font-semibold text-white transition hover:bg-green-600"
+//                 >
+//                   Start Using Premium →
+//                 </button>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </section>
+//   );
+// };
+
+// export default Plan;
+
+
+// import React, { useState } from "react";
+// import axios from "axios";
+// import { useUser, useAuth } from "@clerk/clerk-react";
+// import { Check, Crown, Lock, X, CreditCard, Sparkles, Zap } from "lucide-react";
+
+// const Plan = () => {
+//   const { user } = useUser();
+//   const { getToken } = useAuth();
+
+//   const [showModal, setShowModal] = useState(false);
+//   const [step, setStep] = useState("payment");
+
+//   const [cardData, setCardData] = useState({
+//     name: "",
+//     number: "",
+//     expiry: "",
+//     cvv: "",
+//   });
+
+//   const isPremium = user?.publicMetadata?.plan === "premium";
+
+//   const handlePayment = async () => {
+//     setStep("processing");
+
+//     try {
+//       const { data } = await axios.post(
+//         `${import.meta.env.VITE_BASE_URL}/api/user/upgrade-to-premium`,
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${await getToken()}`,
+//           },
+//         },
+//       );
+
+//       if (data.success) {
+//         window.location.reload();
+//       } else {
+//         alert(data.message);
+//         setStep("payment");
+//       }
+//     } catch (error) {
+//       console.log(error);
+//       setStep("payment");
+//     }
+//   };
+
+//   const formatCard = (val) =>
+//     val
+//       .replace(/\D/g, "")
+//       .slice(0, 16)
+//       .replace(/(.{4})/g, "$1 ")
+//       .trim();
+
+//   const formatExpiry = (val) =>
+//     val
+//       .replace(/\D/g, "")
+//       .slice(0, 4)
+//       .replace(/(.{2})/, "$1/");
+
+//   const closeModal = () => {
+//     setShowModal(false);
+//     setStep("payment");
+//   };
+
+//   return (
+//     <section
+//       id="pricing"
+//       className="relative overflow-hidden px-5 pt-0 pb-2 sm:px-8 lg:px-10"
+//     >
+//       {/* Background Shapes */}
+//       <div className="pointer-events-none absolute left-0 top-20 h-80 w-80 rounded-full bg-purple-100/40 blur-3xl" />
+//       <div className="pointer-events-none absolute right-0 bottom-0 h-80 w-80 rounded-full bg-pink-100/40 blur-3xl" />
+
+//       <div className="relative z-10 mx-auto max-w-6xl">
+//         {/* Heading */}
+//         <div className="text-center">
+//           <span className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-4 py-1.5 text-xs font-medium text-primary sm:text-sm">
+//             <Sparkles className="h-3.5 w-3.5" />
+//             Simple & Flexible Pricing
+//           </span>
+
+//           <h2 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+//             Choose Your Plan
+//           </h2>
+
+//           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+//             Choose a plan to unlock advanced AI content creation tools and boost
+//             your productivity.
+//           </p>
+//         </div>
+
+//         {/* Plans */}
+//         <div className="mx-auto mt-9 grid max-w-5xl gap-5 lg:grid-cols-2">
+//           {/* =================================================
+//               FREE PLAN
+//           ================================================== */}
+
+//           <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white/85 p-6 shadow-sm backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-7">
+//             {/* Side Accent */}
+//             <div className="absolute left-0 top-7 bottom-7 w-1 rounded-r-full bg-gradient-to-b from-indigo-400 to-blue-400" />
+
+//             <div className="flex items-start justify-between">
+//               <div>
+//                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 shadow-sm">
+//                   <Zap className="h-5.5 w-5.5 text-slate-600" />
+//                 </div>
+
+//                 <h3 className="text-2xl font-bold text-slate-900">
+//                   Free Plan
+//                 </h3>
+
+//                 <p className="mt-1.5 max-w-sm text-sm leading-5 text-slate-500">
+//                   Perfect for getting started with AI-powered content creation.
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* Price */}
+//             <div className="mt-5 flex items-baseline">
+//               <span className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+//                 ₹0
+//               </span>
+
+//               <span className="ml-2 text-sm text-slate-500">/ month</span>
+//             </div>
+
+//             <div className="my-5 h-px bg-slate-100" />
+
+//             <p className="mb-3 text-sm font-semibold text-slate-800">
+//               What's included
+//             </p>
+
+//             {/* Features */}
+//             <ul className="space-y-2.5 text-sm text-slate-600">
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>AI Article Writer</span>
+
+//                 <span className="ml-auto text-xs text-slate-400">
+//                   Limited
+//                 </span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Blog Title Generator</span>
+
+//                 <span className="ml-auto text-xs text-slate-400">
+//                   Limited
+//                 </span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>AI Image Generation</span>
+
+//                 <span className="ml-auto text-xs text-slate-400">
+//                   Limited
+//                 </span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Background Removal</span>
+
+//                 <span className="ml-auto text-xs text-slate-400">
+//                   Limited
+//                 </span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Object Removal</span>
+
+//                 <span className="ml-auto text-xs text-slate-400">
+//                   Limited
+//                 </span>
+//               </li>
+//             </ul>
+
+//             {/* CTA */}
+//             <button className="mt-6 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 text-sm font-semibold text-slate-600 transition duration-300 hover:border-slate-300 hover:bg-slate-100">
+//               {isPremium ? "Basic Features" : "Current Plan"}
+//             </button>
+//           </div>
+
+//           {/* =================================================
+//               PREMIUM PLAN
+//           ================================================== */}
+
+//           <div
+//             className={`group relative overflow-hidden rounded-3xl border-2 bg-white/90 p-6 shadow-lg backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-7 ${
+//               isPremium
+//                 ? "border-green-400 shadow-green-100"
+//                 : "border-primary shadow-indigo-100"
+//             }`}
+//           >
+//             {/* Side Accent */}
+//             <div
+//               className={`absolute left-0 top-7 bottom-7 w-1 rounded-r-full ${
+//                 isPremium
+//                   ? "bg-gradient-to-b from-green-400 to-emerald-500"
+//                   : "bg-gradient-to-b from-indigo-500 via-purple-500 to-fuchsia-500"
+//               }`}
+//             />
+
+//             {/* Badge */}
+//             <div
+//               className={`absolute -top-3 left-8 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold text-white shadow-sm ${
+//                 isPremium ? "bg-green-500" : "bg-primary"
+//               }`}
+//             >
+//               <Crown className="h-3.5 w-3.5" />
+
+//               {isPremium ? "ACTIVE" : "MOST POPULAR"}
+//             </div>
+
+//             <div className="flex items-start justify-between">
+//               <div>
+//                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md shadow-indigo-100">
+//                   <Crown className="h-5.5 w-5.5 text-white" />
+//                 </div>
+
+//                 <h3 className="text-2xl font-bold text-slate-900">
+//                   Premium Plan
+//                 </h3>
+
+//                 <p className="mt-1.5 max-w-sm text-sm leading-5 text-slate-500">
+//                   Unlock all advanced AI features without limits.
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* Price */}
+//             <div className="mt-5 flex items-baseline">
+//               <span className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+//                 ₹499
+//               </span>
+
+//               <span className="ml-2 text-sm text-slate-500">/ month</span>
+//             </div>
+
+//             <div className="my-5 h-px bg-slate-100" />
+
+//             <p className="mb-3 text-sm font-semibold text-slate-800">
+//               Everything in Free, plus
+//             </p>
+
+//             {/* Features */}
+//             <ul className="space-y-2.5 text-sm text-slate-600">
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Unlimited AI Article Writer</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Unlimited Blog Title Generator</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Unlimited AI Image Generation</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Unlimited Background Removal</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Unlimited Object Removal</span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Resume Reviewer</span>
+
+//                 <span className="ml-auto rounded-full bg-purple-50 px-2 py-0.5 text-[10px] font-semibold text-primary">
+//                   PREMIUM
+//                 </span>
+//               </li>
+
+//               <li className="flex items-center gap-3">
+//                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+//                   <Check className="h-3 w-3 text-green-600" />
+//                 </span>
+
+//                 <span>Priority Access</span>
+//               </li>
+//             </ul>
+
+//             {/* CTA */}
+//             {isPremium ? (
+//               <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-green-600">
+//                 <Check className="h-4 w-4" />
+//                 Premium Active
+//               </button>
+//             ) : (
+//               <button
+//                 onClick={() => setShowModal(true)}
+//                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition duration-300 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl active:scale-95"
+//               >
+//                 Upgrade to Premium
+//                 <Crown className="h-4 w-4" />
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* =====================================================
+//           PAYMENT MODAL
+//       ====================================================== */}
+
+//       {showModal && (
+//         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm">
+//           <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white shadow-2xl">
+//             {/* Modal Header */}
+//             <div className="flex items-center justify-between bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 px-6 py-5">
+//               <div className="flex items-center gap-3">
+//                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+//                   <Crown className="h-5 w-5 text-white" />
+//                 </div>
+
+//                 <div>
+//                   <p className="text-sm font-semibold text-white">
+//                     NeuralForge Premium
+//                   </p>
+
+//                   <p className="mt-0.5 text-xs text-white/70">
+//                     Premium Plan — ₹499/month
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <button
+//                 onClick={closeModal}
+//                 className="flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
+//               >
+//                 <X className="h-5 w-5" />
+//               </button>
+//             </div>
+
+//             {/* Payment */}
+//             {step === "payment" && (
+//               <div className="p-6">
+//                 {/* Payment Method */}
+//                 <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+//                   <div className="flex items-center gap-3">
+//                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm">
+//                       <CreditCard className="h-5 w-5 text-primary" />
+//                     </div>
+
+//                     <div>
+//                       <p className="text-sm font-semibold text-slate-800">
+//                         Pay securely by card
+//                       </p>
+
+//                       <p className="text-xs text-slate-400">
+//                         Visa, Mastercard & other cards
+//                       </p>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* Card Form */}
+//                 <div className="space-y-3">
+//                   <input
+//                     type="text"
+//                     placeholder="Cardholder Name"
+//                     value={cardData.name}
+//                     onChange={(e) =>
+//                       setCardData({
+//                         ...cardData,
+//                         name: e.target.value,
+//                       })
+//                     }
+//                     className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                   />
+
+//                   <input
+//                     type="text"
+//                     placeholder="Card Number"
+//                     value={cardData.number}
+//                     onChange={(e) =>
+//                       setCardData({
+//                         ...cardData,
+//                         number: formatCard(e.target.value),
+//                       })
+//                     }
+//                     className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                   />
+
+//                   <div className="flex gap-3">
+//                     <input
+//                       type="text"
+//                       placeholder="MM/YY"
+//                       value={cardData.expiry}
+//                       onChange={(e) =>
+//                         setCardData({
+//                           ...cardData,
+//                           expiry: formatExpiry(e.target.value),
+//                         })
+//                       }
+//                       className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                     />
+
+//                     <input
+//                       type="password"
+//                       placeholder="CVV"
+//                       maxLength={3}
+//                       value={cardData.cvv}
+//                       onChange={(e) =>
+//                         setCardData({
+//                           ...cardData,
+//                           cvv: e.target.value.replace(/\D/g, "").slice(0, 3),
+//                         })
+//                       }
+//                       className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
+//                     />
+//                   </div>
+//                 </div>
+
+//                 <button
+//                   onClick={handlePayment}
+//                   disabled={
+//                     !cardData.name ||
+//                     cardData.number.length < 19 ||
+//                     cardData.expiry.length < 5 ||
+//                     cardData.cvv.length < 3
+//                   }
+//                   className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+//                 >
+//                   <Lock className="h-4 w-4" />
+//                   Pay ₹499
+//                 </button>
+
+//                 <p className="mt-3 text-center text-xs text-slate-400">
+//                   🔒 Secured by Razorpay
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* Processing */}
+//             {step === "processing" && (
+//               <div className="flex flex-col items-center justify-center px-8 py-16">
+//                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50">
+//                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-primary" />
+//                 </div>
+
+//                 <p className="mt-6 text-base font-semibold text-slate-800">
+//                   Processing your payment...
+//                 </p>
+
+//                 <p className="mt-2 text-center text-xs text-slate-400">
+//                   Please do not close this window
+//                 </p>
+//               </div>
+//             )}
+
+//             {/* Success */}
+//             {step === "success" && (
+//               <div className="flex flex-col items-center justify-center px-8 py-16">
+//                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+//                   <Check className="h-8 w-8 text-green-600" />
+//                 </div>
+
+//                 <p className="mt-6 text-xl font-bold text-slate-800">
+//                   Payment Successful!
+//                 </p>
+
+//                 <p className="mt-2 text-center text-sm text-slate-500">
+//                   Welcome to Premium! All features are now unlocked.
+//                 </p>
+
+//                 <button
+//                   onClick={() => {
+//                     setShowModal(false);
+//                     setStep("payment");
+//                   }}
+//                   className="mt-6 rounded-xl bg-green-500 px-8 py-3 text-sm font-semibold text-white transition hover:bg-green-600"
+//                 >
+//                   Start Using Premium →
+//                 </button>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </section>
+//   );
+// };
+
+// export default Plan;
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useUser, useAuth } from "@clerk/clerk-react";
+import {
+  Check,
+  Crown,
+  Lock,
+  X,
+  CreditCard,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 
 const Plan = () => {
   const { user } = useUser();
@@ -8,6 +1018,7 @@ const Plan = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [step, setStep] = useState("payment");
+
   const [cardData, setCardData] = useState({
     name: "",
     number: "",
@@ -19,15 +1030,19 @@ const Plan = () => {
 
   const handlePayment = async () => {
     setStep("processing");
+
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/user/upgrade-to-premium`,
         {},
-        { headers: { Authorization: `Bearer ${await getToken()}` } },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        },
       );
 
       if (data.success) {
-        // user.reload() ki jagah page reload karo
         window.location.reload();
       } else {
         alert(data.message);
@@ -52,67 +1067,365 @@ const Plan = () => {
       .slice(0, 4)
       .replace(/(.{2})/, "$1/");
 
+  const closeModal = () => {
+    setShowModal(false);
+    setStep("payment");
+  };
+
   return (
-    <div className="max-w-4xl mx-auto py-20 px-6">
-      {/* Payment Modal */}
+    <section
+      id="pricing"
+      className="relative overflow-hidden px-5 pt-0 pb-2 sm:px-8 lg:px-10"
+    >
+      {/* Background Shapes */}
+      <div className="pointer-events-none absolute left-0 top-20 h-80 w-80 rounded-full bg-purple-100/40 blur-3xl" />
+
+      <div className="pointer-events-none absolute right-0 bottom-0 h-80 w-80 rounded-full bg-pink-100/40 blur-3xl" />
+
+      <div className="relative z-10 mx-auto max-w-6xl">
+        {/* Heading */}
+        <div className="text-center">
+          <span className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-4 py-1.5 text-xs font-medium text-primary sm:text-sm">
+            <Sparkles className="h-3.5 w-3.5" />
+            Simple & Flexible Pricing
+          </span>
+
+          <h2 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            Choose Your Plan
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+            Choose a plan to unlock advanced AI content creation tools and boost
+            your productivity.
+          </p>
+        </div>
+
+        {/* Plans */}
+        <div className="mx-auto mt-7 grid max-w-5xl gap-5 lg:grid-cols-2">
+          {/* =================================================
+              FREE PLAN
+          ================================================== */}
+
+          <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-6">
+            {/* Side Accent */}
+            <div className="absolute bottom-7 left-0 top-7 w-1 rounded-r-full bg-gradient-to-b from-indigo-400 to-blue-400" />
+
+            <div className="relative z-10">
+              {/* Icon */}
+              <div className="mb-2.5 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 shadow-sm">
+                <Zap className="h-5 w-5 text-slate-600" />
+              </div>
+
+              {/* Title */}
+              <h3 className="text-2xl font-bold text-slate-900">
+                Free Plan
+              </h3>
+
+              <p className="mt-1.5 max-w-sm text-sm leading-5 text-slate-500">
+                Perfect for getting started with AI-powered content creation.
+              </p>
+
+              {/* Price */}
+              <div className="mt-4 flex items-baseline">
+                <span className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                  ₹0
+                </span>
+
+                <span className="ml-2 text-sm text-slate-500">/ month</span>
+              </div>
+
+              {/* Divider */}
+              <div className="my-4 h-px bg-slate-100" />
+
+              <p className="mb-2.5 text-sm font-semibold text-slate-800">
+                What's included
+              </p>
+
+              {/* Features */}
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>AI Article Writer</span>
+
+                  <span className="ml-auto text-xs text-slate-400">
+                    Limited
+                  </span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Blog Title Generator</span>
+
+                  <span className="ml-auto text-xs text-slate-400">
+                    Limited
+                  </span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>AI Image Generation</span>
+
+                  <span className="ml-auto text-xs text-slate-400">
+                    Limited
+                  </span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Background Removal</span>
+
+                  <span className="ml-auto text-xs text-slate-400">
+                    Limited
+                  </span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Object Removal</span>
+
+                  <span className="ml-auto text-xs text-slate-400">
+                    Limited
+                  </span>
+                </li>
+              </ul>
+
+              {/* CTA */}
+              <button className="mt-5 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 text-sm font-semibold text-slate-600 transition duration-300 hover:border-slate-300 hover:bg-slate-100">
+                {isPremium ? "Basic Features" : "Current Plan"}
+              </button>
+            </div>
+          </div>
+
+          {/* =================================================
+              PREMIUM PLAN
+          ================================================== */}
+
+          <div
+            className={`group relative overflow-visible rounded-3xl border-2 bg-white/90 p-5 shadow-lg backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-6 ${
+              isPremium
+                ? "border-green-400 shadow-green-100"
+                : "border-primary shadow-indigo-100"
+            }`}
+          >
+            {/* Side Accent */}
+            <div
+              className={`absolute bottom-7 left-0 top-7 w-1 rounded-r-full ${
+                isPremium
+                  ? "bg-gradient-to-b from-green-400 to-emerald-500"
+                  : "bg-gradient-to-b from-indigo-500 via-purple-500 to-fuchsia-500"
+              }`}
+            />
+
+            {/* Most Popular Badge */}
+            <div
+              className={`absolute -top-3 left-8 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold text-white shadow-sm ${
+                isPremium ? "bg-green-500" : "bg-primary"
+              }`}
+            >
+              <Crown className="h-3.5 w-3.5" />
+
+              {isPremium ? "ACTIVE" : "MOST POPULAR"}
+            </div>
+
+            <div className="relative z-10">
+              {/* Icon */}
+              <div className="mb-2.5 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md shadow-indigo-100">
+                <Crown className="h-5 w-5 text-white" />
+              </div>
+
+              {/* Title */}
+              <h3 className="text-2xl font-bold text-slate-900">
+                Premium Plan
+              </h3>
+
+              <p className="mt-1.5 max-w-sm text-sm leading-5 text-slate-500">
+                Unlock all advanced AI features without limits.
+              </p>
+
+              {/* Price */}
+              <div className="mt-4 flex items-baseline">
+                <span className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                  ₹499
+                </span>
+
+                <span className="ml-2 text-sm text-slate-500">/ month</span>
+              </div>
+
+              {/* Divider */}
+              <div className="my-4 h-px bg-slate-100" />
+
+              <p className="mb-2.5 text-sm font-semibold text-slate-800">
+                Everything in Free, plus
+              </p>
+
+              {/* Features */}
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Unlimited AI Article Writer</span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Unlimited Blog Title Generator</span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Unlimited AI Image Generation</span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Unlimited Background Removal</span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Unlimited Object Removal</span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Resume Reviewer</span>
+
+                  <span className="ml-auto rounded-full bg-purple-50 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                    PREMIUM FEATURE
+                  </span>
+                </li>
+
+                <li className="flex items-center gap-3">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                    <Check className="h-3 w-3 text-green-600" />
+                  </span>
+
+                  <span>Priority Access</span>
+                </li>
+              </ul>
+
+              {/* CTA */}
+              {isPremium ? (
+                <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-green-500 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-green-600">
+                  <Check className="h-4 w-4" />
+                  Premium Active
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition duration-300 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl active:scale-95"
+                >
+                  Upgrade to Premium
+                  <Crown className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* =====================================================
+          PAYMENT MODAL
+      ====================================================== */}
+
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm">
+          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white shadow-2xl">
             {/* Modal Header */}
-            <div className="bg-[#2d6be4] px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center justify-between bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 px-6 py-5">
               <div className="flex items-center gap-3">
-                <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center">
-                  <span className="text-[#2d6be4] font-bold text-xs">N</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+                  <Crown className="h-5 w-5 text-white" />
                 </div>
+
                 <div>
-                  <p className="text-white font-semibold text-sm">
-                    NeuralForge
+                  <p className="text-sm font-semibold text-white">
+                    NeuralForge Premium
                   </p>
-                  <p className="text-blue-200 text-xs">
+
+                  <p className="mt-0.5 text-xs text-white/70">
                     Premium Plan — ₹499/month
                   </p>
                 </div>
               </div>
+
               <button
-                onClick={() => {
-                  setShowModal(false);
-                  setStep("payment");
-                }}
-                className="text-white text-xl font-light hover:opacity-70"
+                onClick={closeModal}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white"
               >
-                ✕
+                <X className="h-5 w-5" />
               </button>
             </div>
 
+            {/* Payment */}
             {step === "payment" && (
               <div className="p-6">
-                {/* UPI (decorative) */}
-                <div className="border rounded-lg px-4 py-3 mb-4 flex items-center gap-3 opacity-50 cursor-not-allowed">
-                  <span className="text-2xl">📱</span>
-                  <div>
-                    <p className="text-sm font-medium text-slate-700">UPI</p>
-                    <p className="text-xs text-gray-400">
-                      GPay, PhonePe, Paytm & more
-                    </p>
+                {/* Payment Method */}
+                <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm">
+                      <CreditCard className="h-5 w-5 text-primary" />
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-semibold text-slate-800">
+                        Pay securely by card
+                      </p>
+
+                      <p className="text-xs text-slate-400">
+                        Visa, Mastercard & other cards
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-px flex-1 bg-gray-200" />
-                  <span className="text-xs text-gray-400">or pay by card</span>
-                  <div className="h-px flex-1 bg-gray-200" />
-                </div>
-
+                {/* Card Form */}
                 <div className="space-y-3">
                   <input
                     type="text"
                     placeholder="Cardholder Name"
                     value={cardData.name}
                     onChange={(e) =>
-                      setCardData({ ...cardData, name: e.target.value })
+                      setCardData({
+                        ...cardData,
+                        name: e.target.value,
+                      })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
                   />
+
                   <input
                     type="text"
                     placeholder="Card Number"
@@ -123,8 +1436,9 @@ const Plan = () => {
                         number: formatCard(e.target.value),
                       })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
                   />
+
                   <div className="flex gap-3">
                     <input
                       type="text"
@@ -136,8 +1450,9 @@ const Plan = () => {
                           expiry: formatExpiry(e.target.value),
                         })
                       }
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
                     />
+
                     <input
                       type="password"
                       placeholder="CVV"
@@ -149,7 +1464,7 @@ const Plan = () => {
                           cvv: e.target.value.replace(/\D/g, "").slice(0, 3),
                         })
                       }
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-50"
                     />
                   </div>
                 </div>
@@ -162,46 +1477,56 @@ const Plan = () => {
                     cardData.expiry.length < 5 ||
                     cardData.cvv.length < 3
                   }
-                  className="w-full mt-5 bg-[#2d6be4] hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold text-sm transition-colors"
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
+                  <Lock className="h-4 w-4" />
                   Pay ₹499
                 </button>
 
-                <p className="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
+                <p className="mt-3 text-center text-xs text-slate-400">
                   🔒 Secured by Razorpay
                 </p>
               </div>
             )}
 
+            {/* Processing */}
             {step === "processing" && (
-              <div className="p-10 flex flex-col items-center justify-center gap-4">
-                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                <p className="text-slate-600 font-medium">
+              <div className="flex flex-col items-center justify-center px-8 py-16">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-primary" />
+                </div>
+
+                <p className="mt-6 text-base font-semibold text-slate-800">
                   Processing your payment...
                 </p>
-                <p className="text-xs text-gray-400">
+
+                <p className="mt-2 text-center text-xs text-slate-400">
                   Please do not close this window
                 </p>
               </div>
             )}
 
+            {/* Success */}
             {step === "success" && (
-              <div className="p-10 flex flex-col items-center justify-center gap-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-3xl">✅</span>
+              <div className="flex flex-col items-center justify-center px-8 py-16">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                  <Check className="h-8 w-8 text-green-600" />
                 </div>
-                <p className="text-xl font-bold text-slate-800">
+
+                <p className="mt-6 text-xl font-bold text-slate-800">
                   Payment Successful!
                 </p>
-                <p className="text-sm text-gray-500 text-center">
+
+                <p className="mt-2 text-center text-sm text-slate-500">
                   Welcome to Premium! All features are now unlocked.
                 </p>
+
                 <button
                   onClick={() => {
                     setShowModal(false);
                     setStep("payment");
                   }}
-                  className="mt-2 bg-green-500 hover:bg-green-600 text-white px-8 py-2.5 rounded-lg font-medium text-sm transition-colors"
+                  className="mt-6 rounded-xl bg-green-500 px-8 py-3 text-sm font-semibold text-white transition hover:bg-green-600"
                 >
                   Start Using Premium →
                 </button>
@@ -210,103 +1535,7 @@ const Plan = () => {
           </div>
         </div>
       )}
-
-      <div className="text-center">
-        <h2 className="text-slate-800 text-5xl font-bold">Choose Your Plan</h2>
-        <p className="text-gray-500 max-w-2xl mx-auto mt-4">
-          Choose a plan to unlock advanced AI content creation tools and boost
-          your productivity.
-        </p>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8 mt-16">
-        {/* Free Plan */}
-        <div className="border rounded-2xl p-8 shadow-sm bg-white">
-          <h3 className="text-2xl font-semibold text-slate-800">Free Plan</h3>
-          <p className="text-gray-500 mt-3">
-            Perfect for getting started with AI-powered content creation.
-          </p>
-          <div className="text-4xl font-bold mt-6">
-            ₹0
-            <span className="text-lg text-gray-500 font-normal"> / month</span>
-          </div>
-          <ul className="mt-6 space-y-3 text-gray-600">
-            <li>
-              ✓ AI Article Writer{" "}
-              <span className="text-xs text-gray-400">(Limited)</span>
-            </li>
-            <li>
-              ✓ Blog Title Generator{" "}
-              <span className="text-xs text-gray-400">(Limited)</span>
-            </li>
-            <li>
-              ✓ AI Image Generation{" "}
-              <span className="text-xs text-gray-400">(Limited)</span>
-            </li>
-            <li>
-              ✓ Background Removal{" "}
-              <span className="text-xs text-gray-400">(Limited)</span>
-            </li>
-            <li>
-              ✓ Object Removal{" "}
-              <span className="text-xs text-gray-400">(Limited)</span>
-            </li>
-          </ul>
-          <button className="w-full mt-8 border border-gray-300 py-3 rounded-lg font-medium text-gray-600">
-            {isPremium ? "Basic Features" : "Current Plan"}
-          </button>
-        </div>
-
-        {/* Premium Plan */}
-        <div
-          className={`border-2 rounded-2xl p-8 shadow-md bg-white relative transition-all ${isPremium ? "border-green-500" : "border-indigo-500"}`}
-        >
-          <div
-            className={`absolute -top-3 left-1/2 -translate-x-1/2 text-white text-xs font-semibold px-4 py-1 rounded-full ${isPremium ? "bg-green-500" : "bg-indigo-500"}`}
-          >
-            {isPremium ? "✓ ACTIVE" : "MOST POPULAR"}
-          </div>
-
-          <h3 className="text-2xl font-semibold text-slate-800">
-            Premium Plan
-          </h3>
-          <p className="text-gray-500 mt-3">
-            Unlock all advanced AI features without limits.
-          </p>
-          <div className="text-4xl font-bold mt-6">
-            ₹499
-            <span className="text-lg text-gray-500 font-normal"> / month</span>
-          </div>
-          <ul className="mt-6 space-y-3 text-gray-600">
-            <li>✓ Unlimited AI Article Writer</li>
-            <li>✓ Unlimited Blog Title Generator</li>
-            <li>✓ Unlimited AI Image Generation</li>
-            <li>✓ Unlimited Background Removal</li>
-            <li>✓ Unlimited Object Removal</li>
-            <li>
-              ✓ Resume Reviewer{" "}
-              <span className="text-xs text-indigo-400 font-medium">
-                (Premium Only)
-              </span>
-            </li>
-            <li>✓ Priority Access</li>
-          </ul>
-
-          {isPremium ? (
-            <button className="w-full mt-8 bg-green-500 text-white py-3 rounded-lg font-medium cursor-default">
-              ✓ Premium Active
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowModal(true)}
-              className="w-full mt-8 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition-colors cursor-pointer"
-            >
-              Upgrade to Premium
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+    </section>
   );
 };
 
