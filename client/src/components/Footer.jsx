@@ -50,7 +50,7 @@ const Footer = () => {
   return (
     <footer
       id="about"
-      className="relative mt-16 overflow-hidden border-t border-slate-100 bg-white px-5 pt-14 sm:px-8 lg:px-10"
+      className="relative mt-16 overflow-hidden border-t border-slate-100 bg-white px-5 pt-12 sm:px-8 lg:px-10"
     >
       {/* =====================================================
           BACKGROUND
@@ -70,7 +70,7 @@ const Footer = () => {
             BRAND + HIGHLIGHTS
         ====================================================== */}
 
-        <div className="grid gap-10 border-b border-slate-100 pb-10 md:grid-cols-2 lg:grid-cols-[1.25fr_0.65fr_1fr]">
+        <div className="grid gap-10 border-b border-slate-100 pb-5 md:grid-cols-2 lg:grid-cols-[1.25fr_0.65fr_1fr]">
           {/* Brand */}
           <div>
             <img src={assets.logo} alt="NeuralForge" className="w-36" />
