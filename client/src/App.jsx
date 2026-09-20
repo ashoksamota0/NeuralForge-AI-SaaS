@@ -1,3 +1,50 @@
+// import React from "react";
+// import { Route, Routes } from "react-router-dom";
+// import Home from "./pages/Home";
+// import Layout from "./pages/Layout";
+// import Dashboard from "./pages/Dashboard";
+// import WriteArticle from "./pages/WriteArticle";
+// import BlogTitles from "./pages/BlogTitles";
+// import GenerateImages from "./pages/GenerateImages";
+// import RemoveBackground from "./pages/RemoveBackground";
+// import RemoveObject from "./pages/RemoveObject";
+// import ReviewResume from "./pages/ReviewResume";
+// import Community from "./pages/Community";
+// import AboutUs from "./pages/AboutUs";
+// import ContactUs from "./pages/ContactUs";
+// import PrivacyPolicy from "./pages/PrivacyPolicy";
+// import Plan from "./components/Plan";
+// import { Toaster } from "react-hot-toast";
+// import ScrollToTop from "./components/ScrollToTop";
+
+// const App = () => {
+//   return (
+//     <div>
+//       <Toaster />
+//       <ScrollToTop />
+//       <Routes>
+//         <Route path="/" element={<Home />} />
+//         <Route path="/about" element={<AboutUs />} />
+//         <Route path="/contact" element={<ContactUs />} />
+//         <Route path="/privacy" element={<PrivacyPolicy />} />
+//         <Route path="/ai" element={<Layout />}>
+//           <Route index element={<Dashboard />} />
+//           <Route path="write-article" element={<WriteArticle />} />
+//           <Route path="blog-titles" element={<BlogTitles />} />
+//           <Route path="generate-images" element={<GenerateImages />} />
+//           <Route path="remove-background" element={<RemoveBackground />} />
+//           <Route path="remove-object" element={<RemoveObject />} />
+//           <Route path="review-resume" element={<ReviewResume />} />
+//           <Route path="community" element={<Community />} />
+//           <Route path="plan" element={<Plan />} />
+//         </Route>
+//       </Routes>
+//     </div>
+//   );
+// };
+
+// export default App;
+
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
@@ -14,6 +61,7 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Plan from "./components/Plan";
+import FAQ from "./pages/FAQ";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -22,11 +70,18 @@ const App = () => {
     <div>
       <Toaster />
       <ScrollToTop />
+
       <Routes>
+        {/* Home */}
         <Route path="/" element={<Home />} />
+
+        {/* Public Pages */}
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/faq" element={<FAQ />} />
+
+        {/* AI Platform */}
         <Route path="/ai" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="write-article" element={<WriteArticle />} />
