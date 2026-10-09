@@ -25,33 +25,70 @@ export const generateArticle = async (req, res) => {
       });
     }
 
+    let wordRange;
+    let maxTokens;
+
+    if (length === 800) {
+      wordRange = "600 to 900 words";
+      maxTokens = 1800;
+    } else if (length === 1200) {
+      wordRange = "900 to 1200 words";
+      maxTokens = 2600;
+    } else {
+      wordRange = "1200 to 1600 words";
+      maxTokens = 4000;
+    }
+
     const response = await AI.chat.completions.create({
       model: "gemini-2.5-flash",
+
       messages: [
         {
           role: "user",
           content: `
-Write a professional blog article on "${prompt}".
+Write a complete and professional blog article on "${prompt}".
 
 Requirements:
-- 1000 to 1500 words
-- Catchy title
-- Introduction
-- At least 4 headings
-- Real-world examples
-- Conclusion
-- Professional formatting
-        `,
+- Article length: ${wordRange}
+- Stay within the requested word range
+- Do not significantly exceed the requested maximum word count
+- Start with a catchy and relevant title
+- Include a clear introduction
+- Use multiple meaningful headings and subheadings
+- Explain the topic in detail
+- Include relevant real-world examples where appropriate
+- Maintain a professional and easy-to-read writing style
+- Provide enough detail to make the article informative and comprehensive
+- End with a proper conclusion
+- The article must end with a complete final sentence
+- The final sentence must end with proper punctuation such as a period, exclamation mark, or question mark
+- Never end with raw Markdown symbols such as ** or *
+- Do not stop the article in the middle of a sentence or paragraph
+- Make sure the article is complete from introduction to conclusion
+- Do not add any explanation outside the article
+          `,
         },
       ],
+
       temperature: 0.8,
-      max_tokens: 2500,
+      max_tokens: maxTokens,
     });
 
-    const content = response.choices[0].message.content;
+    let content = response.choices[0].message.content || "";
+
+    // Remove accidental trailing Markdown symbols
+    content = content
+      .trim()
+      .replace(/(?:\*\*|\*)+$/g, "")
+      .trim();
+
+    // Ensure the article ends with proper punctuation
+    if (content && !/[.!?]"?['’]?\s*$/.test(content)) {
+      content += ".";
+    }
 
     await sql`
-      INSERT INTO creations (user_id, prompt, content, type) 
+      INSERT INTO creations (user_id, prompt, content, type)
       VALUES (${userId}, ${prompt}, ${content}, 'article')
     `;
 
@@ -63,7 +100,10 @@ Requirements:
       });
     }
 
-    res.json({ success: true, content });
+    res.json({
+      success: true,
+      content,
+    });
   } catch (error) {
     console.log("\n========== ERROR START ==========");
     console.log("Message:", error.message);
@@ -81,7 +121,10 @@ Requirements:
 
     console.log("=========== ERROR END ===========\n");
 
-    res.json({ success: false, message: error.message });
+    res.json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
