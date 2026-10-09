@@ -28,7 +28,7 @@ NeuralForge AI is a full-stack AI-powered creative platform that brings six AI t
 
 | Tool | What it does | Powered by |
 |---|---|---|
-| 📝 AI Article Writer | Generates complete articles from a topic/prompt | Google Gemini |
+| 📝 AI Article Writer | Generates complete articles from a topic/prompt with selectable length and one-click copy | Google Gemini |
 | #️⃣ Blog Title Generator | Generates creative blog title ideas | Google Gemini |
 | 🎨 AI Image Generator | Creates images from text prompts | ClipDrop + Cloudinary |
 | 🖼️ Background Removal | Removes the background from an uploaded image | Cloudinary AI |
@@ -178,6 +178,8 @@ npm run dev
 ```
 
 App will be live at `http://localhost:5173`.
+
+> **Keep both terminals running** — one terminal for the backend server and one for the frontend development server.
 
 ## 📁 Project Structure
 
