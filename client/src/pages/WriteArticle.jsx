@@ -1,4 +1,11 @@
-import { Check, Clipboard, Edit, Sparkles } from "lucide-react";
+import {
+  Check,
+  Clipboard,
+  Edit,
+  RefreshCw,
+  Sparkles,
+  WandSparkles,
+} from "lucide-react";
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
@@ -20,13 +27,17 @@ const WriteArticle = () => {
   const [content, setContent] = useState("");
   const [copied, setCopied] = useState(false);
 
+  const [improving, setImproving] = useState(false);
+  const [improveInput, setImproveInput] = useState("");
+
   const { getToken } = useAuth();
 
+  // Generate article
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
     // Prevent multiple requests
-    if (loading) return;
+    if (loading || improving) return;
 
     setLoading(true);
     setCopied(false);
@@ -64,6 +75,7 @@ const WriteArticle = () => {
     }
   };
 
+  // Copy article
   const handleCopy = async () => {
     if (!content) return;
 
@@ -78,6 +90,90 @@ const WriteArticle = () => {
       }, 2000);
     } catch (error) {
       toast.error("Failed to copy article.");
+    }
+  };
+
+  // Regenerate article
+  const handleRegenerate = async () => {
+    if (!content || loading || improving) return;
+
+    setLoading(true);
+    setCopied(false);
+
+    try {
+      const prompt = `Write a new article about ${input} in ${selectedLength.text}`;
+
+      const { data } = await axios.post(
+        "/api/ai/generate-article",
+        {
+          prompt,
+          length: selectedLength.length,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        },
+      );
+
+      if (data.success) {
+        setContent(data.content);
+        toast.success("Article regenerated successfully!");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong while regenerating the article.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Improve article
+  const handleImprove = async () => {
+    if (!content || improving || loading) return;
+
+    if (!improveInput.trim()) {
+      toast.error("Please enter how you want to improve the article.");
+      return;
+    }
+
+    setImproving(true);
+    setCopied(false);
+
+    try {
+      const { data } = await axios.post(
+        "/api/ai/improve-article",
+        {
+          content,
+          instruction: improveInput,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        },
+      );
+
+      if (data.success) {
+        setContent(data.content);
+        setImproveInput("");
+        toast.success("Article improved successfully!");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong while improving the article.",
+      );
+    } finally {
+      setImproving(false);
     }
   };
 
@@ -102,7 +198,7 @@ const WriteArticle = () => {
           className="w-full p-2 px-3 mt-2 outline-none text-sm rounded-md border border-gray-300"
           placeholder="The future of artificial intelligence is..."
           required
-          disabled={loading}
+          disabled={loading || improving}
         />
 
         <p className="mt-4 text-sm font-medium">Article Length</p>
@@ -111,7 +207,7 @@ const WriteArticle = () => {
           {articleLength.map((item, index) => (
             <span
               onClick={() => {
-                if (!loading) {
+                if (!loading && !improving) {
                   setSelectedLength(item);
                 }
               }}
@@ -119,7 +215,7 @@ const WriteArticle = () => {
                 selectedLength.text === item.text
                   ? "bg-blue-50 text-blue-700"
                   : "text-gray-500 border-gray-300"
-              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              } ${loading || improving ? "opacity-50 cursor-not-allowed" : ""}`}
               key={index}
             >
               {item.text}
@@ -131,9 +227,11 @@ const WriteArticle = () => {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || improving}
           className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-6 text-sm rounded-lg ${
-            loading ? "cursor-not-allowed opacity-90" : "cursor-pointer"
+            loading || improving
+              ? "cursor-not-allowed opacity-90"
+              : "cursor-pointer"
           }`}
         >
           {loading ? (
@@ -160,29 +258,94 @@ const WriteArticle = () => {
           </div>
 
           {content && (
-            <button
-              type="button"
-              onClick={handleCopy}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-all duration-200 ${
-                copied
-                  ? "border-green-200 bg-green-50 text-green-600"
-                  : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-slate-800"
-              }`}
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5" />
-                  Copied
-                </>
-              ) : (
-                <>
-                  <Clipboard className="w-3.5 h-3.5" />
-                  Copy
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Copy button */}
+              <button
+                type="button"
+                onClick={handleCopy}
+                disabled={loading || improving}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-all duration-200 ${
+                  copied
+                    ? "border-green-200 bg-green-50 text-green-600"
+                    : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-slate-800"
+                }`}
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Clipboard className="w-3.5 h-3.5" />
+                    Copy
+                  </>
+                )}
+              </button>
+
+              {/* Regenerate button */}
+              <button
+                type="button"
+                onClick={handleRegenerate}
+                disabled={loading || improving}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-slate-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <RefreshCw
+                  className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`}
+                />
+                Regenerate
+              </button>
+            </div>
           )}
         </div>
+
+        {/* Improve article */}
+        {content && (
+          <div className="mt-3 border border-purple-100 bg-purple-50/40 rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <WandSparkles className="w-4 h-4 text-purple-500" />
+
+              <p className="text-xs font-medium text-slate-700">
+                Improve this article
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={improveInput}
+                onChange={(e) => setImproveInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleImprove();
+                  }
+                }}
+                disabled={loading || improving}
+                placeholder="e.g. Make it more professional"
+                className="flex-1 min-w-0 px-3 py-2 text-xs outline-none rounded-md border border-gray-200 bg-white"
+              />
+
+              <button
+                type="button"
+                onClick={handleImprove}
+                disabled={loading || improving}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {improving ? (
+                  <>
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-t-transparent animate-spin"></span>
+                    Improving
+                  </>
+                ) : (
+                  <>
+                    <WandSparkles className="w-3.5 h-3.5" />
+                    Improve
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
 
         {!content ? (
           <div className="flex-1 flex justify-center items-center">

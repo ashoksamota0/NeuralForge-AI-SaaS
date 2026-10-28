@@ -128,6 +128,139 @@ Requirements:
   }
 };
 
+export const improveArticle = async (req, res) => {
+  try {
+    const { userId } = req.auth();
+    const { content, instruction } = req.body;
+    const plan = req.plan;
+    const free_usage = req.free_usage;
+
+    // Check if article content is provided
+    if (!content) {
+      return res.json({
+        success: false,
+        message: "Article content is required.",
+      });
+    }
+
+    // Check if improvement instruction is provided
+    if (!instruction) {
+      return res.json({
+        success: false,
+        message: "Improvement instruction is required.",
+      });
+    }
+
+    // Check free usage limit
+    if (plan !== "premium" && free_usage >= 9999) {
+      return res.json({
+        success: false,
+        message: "Limit reached. Upgrade to continue.",
+      });
+    }
+
+    const prompt = `
+Improve the following blog article according to the user's instruction.
+
+USER INSTRUCTION:
+${instruction}
+
+CURRENT ARTICLE:
+${content}
+
+Requirements:
+- Keep the original topic and main meaning of the article
+- Follow the user's improvement instruction carefully
+- Improve grammar, clarity, readability, structure, and overall quality where appropriate
+- Maintain a professional and easy-to-read writing style
+- Keep useful headings and subheadings
+- Keep important information and examples unless the user asks to change them
+- Do not unnecessarily shorten the article
+- Do not change the topic unless specifically requested
+- Do not add any explanation outside the article
+- Return only the improved article
+- Make sure the article is complete from beginning to end
+- Do not stop in the middle of a sentence or paragraph
+- The article must end with a complete final sentence
+- The final sentence must end with proper punctuation such as a period, exclamation mark, or question mark
+- Never end with raw Markdown symbols such as ** or *
+`;
+
+    const response = await AI.chat.completions.create({
+      model: "gemini-2.5-flash",
+
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+
+      temperature: 0.7,
+      max_tokens: 4000,
+    });
+
+    let improvedContent = response.choices[0].message.content || "";
+
+    // Remove accidental trailing Markdown symbols
+    improvedContent = improvedContent
+      .trim()
+      .replace(/(?:\*\*|\*)+$/g, "")
+      .trim();
+
+    // Ensure the article ends with proper punctuation
+    if (improvedContent && !/[.!?]"?['’]?\s*$/.test(improvedContent)) {
+      improvedContent += ".";
+    }
+
+    // Save improved article to database
+    await sql`
+      INSERT INTO creations (user_id, prompt, content, type)
+      VALUES (
+        ${userId},
+        ${`Improve article: ${instruction}`},
+        ${improvedContent},
+        'article'
+      )
+    `;
+
+    // Increase free usage after successful improvement
+    if (plan !== "premium") {
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: {
+          free_usage: free_usage + 1,
+        },
+      });
+    }
+
+    res.json({
+      success: true,
+      content: improvedContent,
+    });
+  } catch (error) {
+    console.log("\n========== ERROR START ==========");
+    console.log("Message:", error.message);
+
+    if (error.status) {
+      console.log("Status:", error.status);
+    }
+
+    if (error.response) {
+      console.log("Response Status:", error.response.status);
+      console.log("Response Data:", error.response.data);
+    }
+
+    console.dir(error, { depth: null });
+
+    console.log("=========== ERROR END ===========\n");
+
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const generateBlogTitle = async (req, res) => {
   try {
     const { userId } = req.auth();
