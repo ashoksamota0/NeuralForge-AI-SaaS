@@ -16,9 +16,13 @@ const ReviewResume = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
 
+    if (loading) return;
+
+    setLoading(true);
+    setContent("");
+
+    try {
       const formData = new FormData();
       formData.append("resume", input);
 
@@ -32,9 +36,14 @@ const ReviewResume = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong while reviewing the resume.",
+      );
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -50,25 +59,49 @@ const ReviewResume = () => {
         </div>
         <p className="mt-6 text-sm font-medium">Upload Resume</p>
 
+        <label
+          htmlFor="resume-upload"
+          className={`flex w-full items-center mt-2 p-2 px-3 rounded-md border border-gray-300 text-sm text-gray-600 ${
+            loading
+              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+              : "cursor-pointer hover:bg-gray-50"
+          }`}
+        >
+          {input ? input.name : "Choose your PDF resume"}
+        </label>
+
         <input
+          id="resume-upload"
           onChange={(e) => setInput(e.target.files[0])}
           type="file"
           accept="application/pdf"
-          className="w-full p-2 px-3 mt-2 outline-none text-sm rounded-md border border-gray-300 text-gray-600"
+          className="hidden"
           required
+          disabled={loading}
         />
 
         <p className="text-xs text-gray-500 font-light mt-1">
           Supports PDF resume only.
         </p>
 
-        <button className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#00DA83] to-[#009BB3] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer">
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#00DA83] to-[#009BB3] text-white px-4 py-2 mt-6 text-sm rounded-lg ${
+            loading ? "cursor-not-allowed opacity-90" : "cursor-pointer"
+          }`}
+        >
           {loading ? (
-            <span className="w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin"></span>
+            <>
+              <span className="w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin"></span>
+              Reviewing...
+            </>
           ) : (
-            <FileText className="w-5" />
+            <>
+              <FileText className="w-5" />
+              Review Resume
+            </>
           )}
-          Review Resume
         </button>
       </form>
       {/* Right col */}
@@ -78,9 +111,19 @@ const ReviewResume = () => {
           <h1 className="text-xl font-semibold">Analysis Results</h1>
         </div>
 
-        {!content ? (
+        {loading ? (
           <div className="flex-1 flex justify-center items-center">
-            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+            <div className="text-sm flex flex-col items-center gap-4 text-gray-400 text-center">
+              <span className="w-9 h-9 rounded-full border-3 border-green-500 border-t-transparent animate-spin"></span>
+              <p>Reviewing resume...</p>
+              <p className="text-xs text-gray-400">
+                This may take a few moments
+              </p>
+            </div>
+          </div>
+        ) : !content ? (
+          <div className="flex-1 flex justify-center items-center">
+            <div className="text-sm flex flex-col items-center gap-5 text-gray-400 text-center">
               <FileText className="w-9 h-9" />
               <p>Upload a resume and click "Review Resume" to get started</p>
             </div>
