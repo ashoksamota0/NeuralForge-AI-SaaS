@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
+import History from "./pages/History";
 import WriteArticle from "./pages/WriteArticle";
 import BlogTitles from "./pages/BlogTitles";
 import GenerateImages from "./pages/GenerateImages";
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="remove-object" element={<RemoveObject />} />
           <Route path="review-resume" element={<ReviewResume />} />
           <Route path="community" element={<Community />} />
+          <Route path="history" element={<History />} />
           <Route path="plan" element={<Plan />} />
         </Route>
       </Routes>

@@ -412,7 +412,7 @@ export const removeImageBackground = async (req, res) => {
         ${userId},
         'Remove background from image',
         ${secure_url},
-        'image'
+        'background-removal'
       )
     `;
 
@@ -445,13 +445,6 @@ export const removeImageObject = async (req, res) => {
     const image = req.file;
     const plan = req.plan;
 
-    // if (plan !== "premium") {
-    //   return res.json({
-    //     success: false,
-    //     message: "This feature is only available for premium subscriptions",
-    //   });
-    // }
-
     const { public_id } = await cloudinary.uploader.upload(image.path);
 
     const imageUrl = cloudinary.url(public_id, {
@@ -465,7 +458,7 @@ export const removeImageObject = async (req, res) => {
         ${userId},
         ${`Removed ${object} from image`},
         ${imageUrl},
-        'image'
+        'object-removal'
       )
     `;
 

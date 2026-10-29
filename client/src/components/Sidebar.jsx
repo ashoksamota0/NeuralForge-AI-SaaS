@@ -3,6 +3,7 @@ import {
   Eraser,
   FileText,
   Hash,
+  History,
   House,
   Image,
   LogOut,
@@ -22,6 +23,7 @@ const navItems = [
   { to: "/ai/remove-object", label: "Remove Object", Icon: Scissors },
   { to: "/ai/review-resume", label: "Review Resume", Icon: FileText },
   { to: "/ai/community", label: "Community", Icon: Users },
+  { to: "/ai/history", label: "History", Icon: History },
 ];
 
 const Sidebar = ({ sidebar, setSidebar }) => {
