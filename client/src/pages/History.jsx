@@ -88,6 +88,29 @@ const History = () => {
     getHistory();
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      const { data } = await axios.delete(`/api/user/delete-creation/${id}`, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+
+      if (data.success) {
+        setCreations((prev) => prev.filter((item) => item.id !== id));
+        toast.success("Creation deleted successfully.");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong while deleting the creation.",
+      );
+    }
+  };
+
   const filteredCreations =
     activeFilter === "all"
       ? creations
@@ -177,7 +200,7 @@ const History = () => {
         /* History List */
         <div className="space-y-3">
           {filteredCreations.map((item) => (
-            <CreationItem key={item.id} item={item} />
+            <CreationItem key={item.id} item={item} onDelete={handleDelete} />
           ))}
         </div>
       )}
